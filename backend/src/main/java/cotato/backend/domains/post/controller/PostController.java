@@ -21,7 +21,7 @@ public class PostController {
 
 	@PostMapping("/excel")
 	public ResponseEntity<DataResponse<Void>> savePostsByExcel(@RequestBody SavePostsByExcelRequest request) {
-		//postService.saveEstatesByExcel(request.getPath());
+		postService.saveEstatesByExcel(request.getPath());
 
 		return ResponseEntity.ok(DataResponse.ok());
 	}

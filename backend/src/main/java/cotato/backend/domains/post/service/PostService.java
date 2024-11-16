@@ -25,7 +25,6 @@ public class PostService {
 
 	private final PostRepository postRepository;
 
-	/*
 	// 로컬 파일 경로로부터 엑셀 파일을 읽어 Post 엔터티로 변환하고 저장
 	public void saveEstatesByExcel(String filePath) {
 		try {
@@ -36,20 +35,28 @@ public class PostService {
 					String content = row.get("content");
 					String name = row.get("name");
 
-					return new Post(title, content, name);
+					return Post.builder()
+						.title(title)
+						.content(content)
+						.name(name)
+						.build();
 				})
 				.collect(Collectors.toList());
+
+			// 리스트 전체 저장
+			postRepository.saveAll(posts);
 
 		} catch (Exception e) {
 			log.error("Failed to save estates by excel", e);
 			throw ApiException.from(INTERNAL_SERVER_ERROR);
 		}
-	}
-	 */
 
-	public void savePost(AddPostRequest request){
+	}
+
+	public void savePost(AddPostRequest request) {
 		postRepository.save(request.toEntity());
 	}
+
 
 
 }
