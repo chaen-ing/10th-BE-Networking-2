@@ -35,6 +35,10 @@ public class Post {
 	@NonNull
 	private String name;
 
-	@ColumnDefault("0")
-	private Long views;
+	@Builder.Default
+	private Long views = 0L;
+
+	public void updateViews() {
+		this.views += 1;
+	}
 }
