@@ -67,6 +67,12 @@ public class PostService {
 		return PostResponse.from(post);
 	}
 
+	public void deletePost(Long id){
+		Post post = postRepository.findById(id).orElseThrow(() -> ApiException.from(POST_NOT_FOUND));
+
+		postRepository.delete(post);
+	}
+
 
 
 }
