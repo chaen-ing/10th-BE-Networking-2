@@ -1,6 +1,9 @@
 package cotato.backend.domains.post.controller;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -8,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import cotato.backend.common.dto.DataResponse;
 import cotato.backend.domains.post.dto.request.AddPostRequest;
+import cotato.backend.domains.post.dto.response.PostResponse;
 import cotato.backend.domains.post.service.PostService;
 import cotato.backend.domains.post.dto.request.SavePostsByExcelRequest;
 import lombok.RequiredArgsConstructor;
@@ -31,5 +35,12 @@ public class PostController {
 		postService.savePost(request);
 
 		return ResponseEntity.ok(DataResponse.ok());
+	}
+
+	@GetMapping("{id}")
+	public ResponseEntity<DataResponse<PostResponse>> getPost(@PathVariable Long id) {
+		PostResponse post = postService.getPost(id);
+
+		return ResponseEntity.ok(DataResponse.from(post));
 	}
 }
