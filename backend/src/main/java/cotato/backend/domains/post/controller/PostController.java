@@ -27,7 +27,8 @@ public class PostController {
 	}
 
 	@PostMapping
-	public ResponseEntity<DataResponse<Void>> savePost(@RequestBody AddPostRequest request){
+	public ResponseEntity<DataResponse<Void>> savePost(@RequestBody AddPostRequest request) {
+		postService.savePost(request);
 
 		return ResponseEntity.ok(DataResponse.ok());
 	}
