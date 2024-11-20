@@ -1,5 +1,7 @@
 package cotato.backend.domains.post.controller;
 
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -36,6 +38,13 @@ public class PostController {
 		postService.savePost(request);
 
 		return ResponseEntity.ok(DataResponse.ok());
+	}
+
+	@GetMapping
+	public ResponseEntity<DataResponse<List<PostResponse>>> getAllPost() {
+		List<PostResponse> posts = postService.getAllPost();
+
+		return ResponseEntity.ok(DataResponse.from(posts));
 	}
 
 	@GetMapping("{id}")

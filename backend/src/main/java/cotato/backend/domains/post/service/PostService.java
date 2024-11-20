@@ -73,6 +73,14 @@ public class PostService {
 		postRepository.delete(post);
 	}
 
+	public List<PostResponse> getAllPost(){
+		List<Post> posts = postRepository.findAll();
+
+		List<PostResponse> postResponses = posts.stream().map(PostResponse::from).toList();
+
+		return postResponses;
+	}
+
 
 
 }
