@@ -2,7 +2,10 @@ package cotato.backend.domains.post.controller;
 
 import java.util.List;
 
-import org.springframework.http.HttpStatus;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import cotato.backend.common.dto.DataResponse;
@@ -74,11 +78,36 @@ public class PostController {
 		@ApiResponse(responseCode = "200", description = "게시글 조회 성공"),
 		@ApiResponse(responseCode = "500", description = "서버 오류")
 	})
-	@GetMapping
+	@GetMapping("/v1")
 	public ResponseEntity<DataResponse<List<PostResponse>>> getAllPost() {
 		List<PostResponse> posts = postService.getAllPost();
 
 		return ResponseEntity.ok(DataResponse.from(posts));
+	}
+
+
+	/**
+	 * 조회 수 기준으로 게시글 목록 조회
+	 *
+	 * @param pageable 페이지네이션 정보를 포함하는 객체
+	 *                 - size: 페이지당 데이터 개수 (기본값: 10)
+	 *                 - sort: 정렬 기준 (기본값: views, 내림차순)
+	 *                 - page: 요청할 페이지 번호 (기본값: 0)
+	 * @return 페이지네이션 정보를 포함한 게시글 목록
+	 */
+	@Operation(summary = "게시글 목록 조회 (조회순, 페이징 포함)", description = "조회 수 기준으로 정렬된 게시글 목록을 페이징 처리하여 반환합니다.")
+	@ApiResponses({
+		@ApiResponse(responseCode = "200", description = "게시글 조회 성공"),
+		@ApiResponse(responseCode = "500", description = "서버 오류")
+	})
+	@GetMapping("/v2")
+	public ResponseEntity<DataResponse<Page<PostResponse>>> getAllPostByViews(
+		@RequestParam(required = true, defaultValue = "0", value="page") int pageNo,
+		@RequestParam(required = true, defaultValue = "views", value="criteria") String criteria
+		) {
+		Page<PostResponse> postsByViews = postService.getPostsByViews(pageNo,criteria);
+
+		return ResponseEntity.ok(DataResponse.from(postsByViews));
 	}
 
 	/**

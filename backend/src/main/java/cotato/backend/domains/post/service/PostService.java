@@ -3,15 +3,17 @@ package cotato.backend.domains.post.service;
 import static cotato.backend.common.exception.ErrorCode.*;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import cotato.backend.common.excel.ExcelUtils;
 import cotato.backend.common.exception.ApiException;
-import cotato.backend.common.exception.ErrorCode;
 import cotato.backend.domains.post.domain.Post;
 import cotato.backend.domains.post.dto.request.AddPostRequest;
 import cotato.backend.domains.post.dto.response.PostResponse;
@@ -25,6 +27,8 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 @Transactional
 public class PostService {
+
+	static final int PAGE_SIZE = 10;
 
 	private final PostRepository postRepository;
 
@@ -60,20 +64,20 @@ public class PostService {
 		postRepository.save(request.toEntity());
 	}
 
-	public PostResponse getPost(Long id){
+	public PostResponse getPost(Long id) {
 		Post post = postRepository.findById(id).orElseThrow(() -> ApiException.from(POST_NOT_FOUND));
 		post.updateViews();
 
 		return PostResponse.from(post);
 	}
 
-	public void deletePost(Long id){
+	public void deletePost(Long id) {
 		Post post = postRepository.findById(id).orElseThrow(() -> ApiException.from(POST_NOT_FOUND));
 
 		postRepository.delete(post);
 	}
 
-	public List<PostResponse> getAllPost(){
+	public List<PostResponse> getAllPost() {
 		List<Post> posts = postRepository.findAll();
 
 		List<PostResponse> postResponses = posts.stream().map(PostResponse::from).toList();
@@ -81,6 +85,13 @@ public class PostService {
 		return postResponses;
 	}
 
+	public Page<PostResponse> getPostsByViews(int pageNo, String criteria) {
 
+		Pageable pageable = PageRequest.of(pageNo, 10, Sort.by(Sort.Direction.DESC, criteria));
+
+		Page<PostResponse> page = postRepository.findAll(pageable).map(PostResponse::from);
+
+		return page;
+	}
 
 }
